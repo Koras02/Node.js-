@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
-
+ 
 function templateHTML(title, list, body){
   return `
   <!doctype html>
@@ -13,7 +13,6 @@ function templateHTML(title, list, body){
   <body>
     <h1><a href="/">WEB</a></h1>
     ${list}
-    <a href="/create">create</a>
     ${body}
   </body>
   </html>
@@ -29,7 +28,7 @@ function templateList(filelist){
   list = list+'</ul>';
   return list;
 }
-
+ 
 var app = http.createServer(function(request,response){
     var _url = request.url;
     var queryData = url.parse(_url, true).query;
@@ -43,10 +42,10 @@ var app = http.createServer(function(request,response){
           var template = templateHTML(title, list, `<h2>${title}</h2>${description}`);
           response.writeHead(200);
           response.end(template);
-        });
+        })
       } else {
         fs.readdir('./data', function(error, filelist){
-          fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
+          fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
             var title = queryData.id;
             var list = templateList(filelist);
             var template = templateHTML(title, list, `<h2>${title}</h2>${description}`);
@@ -55,24 +54,6 @@ var app = http.createServer(function(request,response){
           });
         });
       }
-    } else if(pathnaem === '/create'){
-      fs.readdir('./data', function(error, filelist) {
-        var title = 'WEB - create';
-        var list = templateList(filelist);
-        var template = templateHTML(title, list, `
-        <fom action="http://localhost:3000/process.create" method="post">
-          <p><input type="text" name="title"></p>
-        <p>
-            <textarea name="description"></textarea>
-          </p>
-          <p>
-            <input type="submmit">
-          </p>
-         </from>
-        `);
-        response.writeHead(200);
-        response.end(template);
-      });
     } else {
       response.writeHead(404);
       response.end('Not found');
@@ -82,7 +63,3 @@ var app = http.createServer(function(request,response){
  
 });
 app.listen(3000);
-    
-    
-    
-    
